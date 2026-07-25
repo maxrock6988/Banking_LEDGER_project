@@ -13,7 +13,7 @@ async function UserRegisterController(req,res){
     email:email
    })
 
-   if(!IsExist){
+   if(IsExist){
     return res.status(422).json({
         message:"user already exist with email",
         status:"failed"
@@ -25,7 +25,7 @@ async function UserRegisterController(req,res){
    })
    const token =jwt.sign({userId:user._id},process.env.JWT_SECRET,{expiresIn:"3d"})
 
-  res.cookies("token",token)
+  res.cookie("token",token)
 
   res.status(201).json({
     user:{
