@@ -48,7 +48,7 @@ ledgerSchema.pre("updateMany", preventLedgerModification);
 
 
 
-const legdmod=mongoose.model("ledger",ledgerSchema);
+const legdermodel=mongoose.model("ledger",ledgerSchema);
 
 
-module.exports=legdmod;.1
+module.exports=legdermodel;

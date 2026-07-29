@@ -20,8 +20,6 @@ transporter.verify((error, success) => {
   }
 });
 
-
-
 // Function to send email
 const sendEmail = async (to, subject, text, html) => {
   try {
@@ -40,8 +38,6 @@ const sendEmail = async (to, subject, text, html) => {
   }
 };
 
-
-
 async function sendRegistrationEmail(userEmail, name) {
   const subject = "Welcome to Backend Ledger!";
 
@@ -59,6 +55,56 @@ The Backend Ledger Team`;
 
   await sendEmail(userEmail, subject, text, html);
 }
+
+async function sendTransactionEmail(userEmail, name, amount, toAccount) {
+  const subject = "Transaction Successful!";
+
+  const text = `Hello ${name},
+
+Your transaction of $${amount} to account ${toAccount} was completed successfully.
+
+Thank you for using Backend Ledger!`;
+
+  const html = `
+    <p>Hello ${name},</p>
+    <p>Your transaction of <strong>$${amount}</strong> to account <strong>${toAccount}</strong> was completed successfully.</p>
+    <p>Thank you for using <strong>Backend Ledger</strong>!</p>
+  `;
+
+  await sendEmail(userEmail, subject, text, html);
+}
+
+async function sendTransactionFailedEmail(userEmail, name, amount, toAccount) {
+  const subject = "Transaction Failed!";
+
+  const text = `Hello ${name},
+
+Unfortunately, your transaction of ₹${amount} to account ${toAccount} could not be completed.
+
+Please try again later.
+
+Thank you for using Backend Ledger!`;
+
+  const html = `
+    <p>Hello ${name},</p>
+
+    <p>
+      Unfortunately, your transaction of
+      <strong>₹${amount}</strong> to account
+      <strong>${toAccount}</strong> could not be completed.
+    </p>
+
+    <p>Please try again later.</p>
+
+    <p>Thank you for using <strong>Backend Ledger</strong>!</p>
+  `;
+
+  await sendEmail(userEmail, subject, text, html);
+}
+
 module.exports = {
   sendRegistrationEmail,
+  sendTransactionEmail,
+  sendTransactionFailedEmail
 };
+
