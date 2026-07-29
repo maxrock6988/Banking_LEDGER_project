@@ -1,0 +1,41 @@
+const mongoose = require("mongoose");
+
+const transactionSchema = new mongoose.Schema({
+  fromAccount: {
+    type: mongoose.Schema.ObjectId,
+    ref: "account",
+    required: [true, "Transaction must be associated with a from account"],
+    index: true,
+  },
+  ToAccount: {
+    type: mongoose.Schema.ObjectId,
+    ref: "account",
+    required: [true, "Transaction must be associated with a to account"],
+    index: true,
+  },
+  status: {
+    type: String,
+    enum: {
+      values: ["PENDING", "COMPLETE", "FAILED", "REVERSED"],
+      message: "status can be either PENDING,COMPLETE,FAILED or REVERSED",
+    },
+    default: "PENDING",
+  },
+  amount: {
+    type: Number,
+    required: [true, "Amount is required for creating a transaction"],
+    min: [0, "Transaction amount cannot be negative"],
+  },
+  idempotencyKey: {
+    type: String,
+    required: [true, "idempotency is required for creating a transaction"],
+    index:true,
+    unique:true
+  },
+},{
+    timestamps:true
+});
+
+const transactionModel= moongose.model("transaction",transactionSchema)
+
+module.exports =transactionModel
