@@ -27,6 +27,14 @@ const userSchema = new mongoose.Schema(
       minlength: [7, "password should contain more 7"],
       select: false,
     },
+
+    systemUser:{
+      type:Boolean,
+      default:false,
+      immutable:true,
+      select:false
+
+    }
   },
   {
     timestamps: true,
