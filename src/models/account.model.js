@@ -13,24 +13,32 @@ const accountSchema = new mongoose.Schema(
       type: String,
       enum: {
         values: ["ACTIVE", "FROZEN", "CLOSED"],
-        message: "status can be either ACTIVE,FROZEN or CLOSED ",
+        message: "Status can be either ACTIVE, FROZEN or CLOSED",
       },
       default: "ACTIVE",
     },
     currency: {
       type: String,
-      required: [true, "currency is required for creating an account"],
+      required: [true, "Currency is required for creating an account"],
       default: "INR",
     },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  }
 );
 
+// Compound index
 accountSchema.index({ user: 1, status: 1 });
 
+// Instance method to calculate account balance
 accountSchema.methods.getBalance = async function () {
   const balanceData = await ledgerModel.aggregate([
-    { $match: { account: this._id } },
+    {
+      $match: {
+        account: this._id,
+      },
+    },
     {
       $group: {
         _id: null,
@@ -49,17 +57,20 @@ accountSchema.methods.getBalance = async function () {
     {
       $project: {
         _id: 0,
-        balance: { $substact: ["$totalCredit", "$totalDebit"] },
+        balance: {
+          $subtract: ["$totalCredit", "$totalDebit"],
+        },
       },
     },
   ]);
+
+  if (balanceData.length === 0) {
+    return 0;
+  }
+
+  return balanceData[0].balance;
 };
 
-if (balanceData.length === 0) {
-  return 0;
-}
-return balanceData[0].balance;
+const accountModel = mongoose.model("account", accountSchema);
 
-const accountmodel = mongoose.model("account", accountSchema);
-
-module.exports = accountmodel;
+module.exports = accountModel;
