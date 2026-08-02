@@ -18,6 +18,10 @@ const transactionrouter=require("./routes/transaction.routes.js")
 /**
  * -use Routes
  */
+app.get("/",(req,res)=>{
+    res.send("Ledger services is up and running")
+})
+
 app.use("/api/auth",authrouter)
 app.use("/api/accounts",accountrouter)
 app.use("/api/transaction",transactionrouter)
