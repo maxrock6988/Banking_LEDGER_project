@@ -39,7 +39,7 @@ async function createTransaction(req, res) {
     });
 
     if (isTransactionAlreadyExist) {
-      if (isTransactionAlreadyExist.status === "COMPLETED") {
+      if (isTransactionAlreadyExist.status === "COMPLETE") {
         return res.status(200).json({
           message: "Transaction already processed",
         });
@@ -126,7 +126,7 @@ async function createTransaction(req, res) {
       { session },
     );
 
-    transaction.status = "COMPLETED";
+    transaction.status = "COMPLETE";
     await transaction.save({ session });
 
     await session.commitTransaction();

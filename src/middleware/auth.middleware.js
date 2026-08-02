@@ -1,6 +1,7 @@
 const { model } = require("mongoose");
 const userModel = require("../models/user.model.js");
 const jwt = require("jsonwebtoken");
+const tokenBlackListModel=require("../models/Blacklist.model.js")
 
 async function authMiddleware(req, res, next) {
   const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
@@ -10,6 +11,16 @@ async function authMiddleware(req, res, next) {
       message: "unauthosrized access ,token is missing",
     });
   }
+
+  const isblacklist=await tokenBlackListModel.findOne({token})
+
+  if(isblacklist){
+    return res.status(401).json({
+      message:"Unauthorized access, token is invalid"
+    })
+  }
+
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -32,6 +43,15 @@ async function authSystemMiddleware(req, res, next) {
     return res.status(401).json({
       message: "unauthosrized access ,token is missing",
     });
+  }
+
+
+ const isblacklist=await tokenBlackListModel.findOne({token})
+
+  if(isblacklist){
+    return res.status(401).json({
+      message:"Unauthorized access, token is invalid"
+    })
   }
 
   try {
