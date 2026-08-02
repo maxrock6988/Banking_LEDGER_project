@@ -17,6 +17,17 @@ const router =express.Router()
 router.post("/",authmiddleware.authMiddleware,acccountController.createAccountController)
 
 
+/**
+ * -GET /api/accounts/
+ * -get all account of the logged in user
+ * -protected Routes
+ */
+router.get("/",authmiddleware.authMiddleware,acccountController.GetAccountController)
+
+/**
+ * -GET /api/accounts/balance/:accountId
+ */
+router.get("/balance/:accountId",authmiddleware.authMiddleware,acccountController.GetAccountBalanceController)
 
 
 module.exports=router

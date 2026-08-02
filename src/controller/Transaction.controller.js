@@ -254,6 +254,7 @@ async function createInitialFundsTransaction(req, res) {
 
     await transaction.save({ session });
 
+    // Debit entry
     await ledgerModel.create(
       [
         {
@@ -263,9 +264,10 @@ async function createInitialFundsTransaction(req, res) {
           type: "DEBIT",
         },
       ],
-      { session },
+      { session }
     );
 
+    // Credit entry
     await ledgerModel.create(
       [
         {
@@ -275,9 +277,18 @@ async function createInitialFundsTransaction(req, res) {
           type: "CREDIT",
         },
       ],
-      { session },
+      { session }
     );
 
+    await accountModel.findByIdAndUpdate(
+      toAccount,
+      {
+        $inc: { balance: amount },
+      },
+      { session }
+    );
+
+    // Mark transaction complete
     transaction.status = "COMPLETE";
     await transaction.save({ session });
 
